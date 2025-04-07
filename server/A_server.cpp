@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 #include <grpcpp/grpcpp.h>
-#include "generated/cpp/movie.grpc.pb.h"
+#include "movie.grpc.pb.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -41,7 +41,7 @@ public:
 };
 
 void RunServer() {
-    std::string server_address("0.0.0.0:50051");
+    std::string server_address("0.0.0.0:5001");
     MovieSearchServiceImpl service;
 
     ServerBuilder builder;

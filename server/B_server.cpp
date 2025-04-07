@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 #include <grpcpp/grpcpp.h>
-#include "generated/cpp/movie.grpc.pb.h"
+#include "movie.grpc.pb.h"
 
 using grpc::Channel;
 using grpc::ClientContext;
