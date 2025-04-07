@@ -16,9 +16,22 @@ add_executable(A_server
         server/A_server.cpp
         generated/cpp/movie.pb.cc
         generated/cpp/movie.grpc.pb.cc
+        server/B_server.cpp
 )
 
 target_link_libraries(A_server
+        gRPC::grpc++
+        protobuf::libprotobuf
+)
+
+
+add_executable(B_server
+        server/B_server.cpp
+        generated/cpp/movie.pb.cc
+        generated/cpp/movie.grpc.pb.cc
+)
+
+target_link_libraries(B_server
         gRPC::grpc++
         protobuf::libprotobuf
 )

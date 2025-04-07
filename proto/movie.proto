@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package movie;
+
+service MovieSearch {
+  rpc Search (SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+  string title = 1; // The movie title to search for
+}
+
+message MovieInfo {
+  string title = 1;
+  string director = 2;
+  string genre = 3;
+  int32 year = 4;
+}
+
+message SearchResponse {
+  repeated MovieInfo results = 1;
+}
