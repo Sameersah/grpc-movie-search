@@ -49,3 +49,39 @@ target_link_libraries(client
         gRPC::grpc++
         protobuf::libprotobuf
 )
+
+add_executable(C_server
+        server/C_server.cpp
+        generated/cpp/movie.pb.cc
+        generated/cpp/movie.grpc.pb.cc
+        generated/cpp/movie.grpc.pb.h
+)
+
+target_link_libraries(C_server
+        gRPC::grpc++
+        protobuf::libprotobuf
+)
+
+add_executable(D_server
+        server/D_server.cpp
+        generated/cpp/movie.pb.cc
+        generated/cpp/movie.grpc.pb.cc
+        generated/cpp/movie.grpc.pb.h
+)
+
+target_link_libraries(D_server
+        gRPC::grpc++
+        protobuf::libprotobuf
+)
+
+add_executable(E_server
+        server/E_server.cpp
+        generated/cpp/movie.pb.cc
+        generated/cpp/movie.grpc.pb.cc
+        generated/cpp/movie.grpc.pb.h
+)
+
+target_link_libraries(E_server
+        gRPC::grpc++
+        protobuf::libprotobuf
+)
