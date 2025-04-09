@@ -15,6 +15,7 @@ using grpc::ServerContext;
 using grpc::ClientContext;
 using grpc::Channel;
 using grpc::Status;
+using grpc::StatusCode;
 
 using movie::MovieSearch;
 using movie::SearchRequest;
@@ -50,48 +51,140 @@ bool movieMatchesQuery(const Movie& movie, const std::string& query) {
 class CClient {
 public:
     CClient(std::shared_ptr<Channel> channel)
-        : stub_(MovieSearch::NewStub(channel)) {}
+        : stub_(MovieSearch::NewStub(channel)) {
+        // Test connection to C on startup
+        SearchRequest ping;
+        ping.set_title("__ping__");
+        SearchResponse pong;
+        ClientContext context;
+        
+        std::cout << "[B] Testing connection to server C..." << std::endl;
+        Status status = stub_->Search(&context, ping, &pong);
+        
+        if (status.ok()) {
+            std::cout << "[B] ✅ Successfully connected to server C" << std::endl;
+            connected_ = true;
+        } else {
+            std::cerr << "[B] ❌ Failed to connect to server C: " 
+                     << status.error_message() 
+                     << " (code: " << status.error_code() << ")" << std::endl;
+            if (status.error_code() == StatusCode::UNAVAILABLE) {
+                std::cerr << "[B] 🔍 This usually means server C is not running or the address is incorrect" << std::endl;
+            }
+            connected_ = false;
+        }
+    }
 
     SearchResponse Search(const std::string& title) {
         SearchRequest request;
         request.set_title(title);
         SearchResponse response;
         ClientContext context;
+        
+        // Set a timeout for the request (5 seconds)
+        std::chrono::system_clock::time_point deadline = 
+            std::chrono::system_clock::now() + std::chrono::seconds(5);
+        context.set_deadline(deadline);
 
+        std::cout << "[B] Sending request to server C: \"" << title << "\"" << std::endl;
         Status status = stub_->Search(&context, request, &response);
+        
         if (!status.ok()) {
-            std::cerr << "[B → C] gRPC call failed: " << status.error_message() << std::endl;
+            std::cerr << "[B → C] gRPC call failed: " << status.error_message() 
+                     << " (code: " << status.error_code() << ")" << std::endl;
+            
+            if (status.error_code() == StatusCode::DEADLINE_EXCEEDED) {
+                std::cerr << "[B] 🕒 Request timed out. Server C might be overloaded or unresponsive." << std::endl;
+            } else if (status.error_code() == StatusCode::UNAVAILABLE) {
+                std::cerr << "[B] 🔌 Server C is unavailable. Network issue or server not running." << std::endl;
+            }
+            
+            connected_ = false;
+        } else {
+            connected_ = true;
+            std::cout << "[B] Received " << response.results_size() << " results from server C" << std::endl;
         }
 
         return response;
     }
 
+    bool isConnected() const {
+        return connected_;
+    }
+
 private:
     std::unique_ptr<MovieSearch::Stub> stub_;
+    bool connected_ = false;
 };
 
 // ---------- B as gRPC Client to D ----------
 class DClient {
 public:
     DClient(std::shared_ptr<Channel> channel)
-        : stub_(MovieSearch::NewStub(channel)) {}
+        : stub_(MovieSearch::NewStub(channel)) {
+        // Test connection to D on startup
+        SearchRequest ping;
+        ping.set_title("__ping__");
+        SearchResponse pong;
+        ClientContext context;
+        
+        std::cout << "[B] Testing connection to server D..." << std::endl;
+        Status status = stub_->Search(&context, ping, &pong);
+        
+        if (status.ok()) {
+            std::cout << "[B] ✅ Successfully connected to server D" << std::endl;
+            connected_ = true;
+        } else {
+            std::cerr << "[B] ❌ Failed to connect to server D: " 
+                     << status.error_message() 
+                     << " (code: " << status.error_code() << ")" << std::endl;
+            if (status.error_code() == StatusCode::UNAVAILABLE) {
+                std::cerr << "[B] 🔍 This usually means server D is not running or the address is incorrect" << std::endl;
+            }
+            connected_ = false;
+        }
+    }
 
     SearchResponse Search(const std::string& title) {
         SearchRequest request;
         request.set_title(title);
         SearchResponse response;
         ClientContext context;
+        
+        // Set a timeout for the request (5 seconds)
+        std::chrono::system_clock::time_point deadline = 
+            std::chrono::system_clock::now() + std::chrono::seconds(5);
+        context.set_deadline(deadline);
 
+        std::cout << "[B] Sending request to server D: \"" << title << "\"" << std::endl;
         Status status = stub_->Search(&context, request, &response);
+        
         if (!status.ok()) {
-            std::cerr << "[B → D] gRPC call failed: " << status.error_message() << std::endl;
+            std::cerr << "[B → D] gRPC call failed: " << status.error_message() 
+                     << " (code: " << status.error_code() << ")" << std::endl;
+            
+            if (status.error_code() == StatusCode::DEADLINE_EXCEEDED) {
+                std::cerr << "[B] 🕒 Request timed out. Server D might be overloaded or unresponsive." << std::endl;
+            } else if (status.error_code() == StatusCode::UNAVAILABLE) {
+                std::cerr << "[B] 🔌 Server D is unavailable. Network issue or server not running." << std::endl;
+            }
+            
+            connected_ = false;
+        } else {
+            connected_ = true;
+            std::cout << "[B] Received " << response.results_size() << " results from server D" << std::endl;
         }
 
         return response;
     }
 
+    bool isConnected() const {
+        return connected_;
+    }
+
 private:
     std::unique_ptr<MovieSearch::Stub> stub_;
+    bool connected_ = false;
 };
 
 // ---------- B as gRPC Server ----------
@@ -100,15 +193,27 @@ public:
     MovieSearchServiceImpl(const std::string& c_address, const std::string& d_address, const std::string& csv_file)
         : c_client_(grpc::CreateChannel(c_address, grpc::InsecureChannelCredentials())),
           d_client_(grpc::CreateChannel(d_address, grpc::InsecureChannelCredentials())) {
-        movies_ = loadMoviesFromCSV(csv_file);
+        try {
+            movies_ = loadMoviesFromCSV(csv_file);
+            std::cout << "[B] Successfully loaded movies from " << csv_file << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "[B] ❌ Error loading movies: " << e.what() << std::endl;
+        }
     }
 
     Status Search(ServerContext* context, const SearchRequest* request,
                   SearchResponse* response) override {
         std::string query = request->title();
-        std::cout << "[B] Received query: " << query << std::endl;
+        std::cout << "[B] Received query: \"" << query << "\"" << std::endl;
+        
+        // Special case for ping
+        if (query == "__ping__") {
+            std::cout << "[B] Received ping request, sending empty response" << std::endl;
+            return Status::OK;
+        }
 
         // Search in B's local data
+        int localMatches = 0;
         for (const auto& movie : movies_) {
             if (movieMatchesQuery(movie, query)) {
                 MovieInfo* result = response->add_results();
@@ -124,27 +229,42 @@ public:
                         result->set_year(0); // Default if parsing fails
                     }
                 }
+                localMatches++;
             }
         }
+        std::cout << "[B] Found " << localMatches << " matches in local data" << std::endl;
 
-        // Forward request to C
-        std::cout << "[B] Forwarding to Process C..." << std::endl;
-        SearchResponse c_response = c_client_.Search(query);
+        // Forward request to C if connected
+        if (c_client_.isConnected()) {
+            std::cout << "[B] Forwarding query to server C: \"" << query << "\"" << std::endl;
+            SearchResponse c_response = c_client_.Search(query);
 
-        // Forward request to D
-        std::cout << "[B] Forwarding to Process D..." << std::endl;
-        SearchResponse d_response = d_client_.Search(query);
-
-        // Gather results from C
-        for (const auto& movie : c_response.results()) {
-            *response->add_results() = movie;
+            int cMatches = 0;
+            for (const auto& movie : c_response.results()) {
+                *response->add_results() = movie;
+                cMatches++;
+            }
+            std::cout << "[B] Added " << cMatches << " results from server C" << std::endl;
+        } else {
+            std::cerr << "[B] ⚠️ Skipping forward to server C - connection is down" << std::endl;
         }
 
-        // Gather results from D
-        for (const auto& movie : d_response.results()) {
-            *response->add_results() = movie;
+        // Forward request to D if connected
+        if (d_client_.isConnected()) {
+            std::cout << "[B] Forwarding query to server D: \"" << query << "\"" << std::endl;
+            SearchResponse d_response = d_client_.Search(query);
+
+            int dMatches = 0;
+            for (const auto& movie : d_response.results()) {
+                *response->add_results() = movie;
+                dMatches++;
+            }
+            std::cout << "[B] Added " << dMatches << " results from server D" << std::endl;
+        } else {
+            std::cerr << "[B] ⚠️ Skipping forward to server D - connection is down" << std::endl;
         }
 
+        std::cout << "[B] Returning " << response->results_size() << " total results to server A" << std::endl;
         return Status::OK;
     }
 
@@ -156,6 +276,10 @@ private:
 
 void RunServer(const std::string& server_address, const std::string& c_address, 
                const std::string& d_address, const std::string& csv_file) {
+    std::cout << "[B] Starting server on " << server_address << std::endl;
+    std::cout << "[B] Will connect to server C at " << c_address << std::endl;
+    std::cout << "[B] Will connect to server D at " << d_address << std::endl;
+    
     MovieSearchServiceImpl service(c_address, d_address, csv_file);
 
     ServerBuilder builder;
@@ -163,22 +287,32 @@ void RunServer(const std::string& server_address, const std::string& c_address,
     builder.RegisterService(&service);
 
     std::unique_ptr<Server> server(builder.BuildAndStart());
-    std::cout << "[B] Server listening on " << server_address << std::endl;
-
-    server->Wait();
+    if (server) {
+        std::cout << "[B] Server listening on " << server_address << std::endl;
+        server->Wait();
+    } else {
+        std::cerr << "[B] ❌ Failed to start server on " << server_address << std::endl;
+    }
 }
 
 int main(int argc, char** argv) {
     if (argc != 5) {
         std::cerr << "Usage: ./B_server <listen_address> <C_address> <D_address> <csv_file>" << std::endl;
+        std::cerr << "Example: ./B_server 0.0.0.0:50002 localhost:50003 localhost:50004 movies.csv" << std::endl;
         return 1;
     }
 
-    std::string b_addr = argv[1]; // e.g., 0.0.0.0:5002
-    std::string c_addr = argv[2]; // e.g., 192.168.0.4:5003
-    std::string d_addr = argv[3]; // e.g., 192.168.0.4:5004
-    std::string csv_file = argv[4]; // e.g., b_movies.csv
+    try {
+        std::string b_addr = argv[1]; // e.g., 0.0.0.0:5002
+        std::string c_addr = argv[2]; // e.g., 192.168.0.4:5003
+        std::string d_addr = argv[3]; // e.g., 192.168.0.4:5004
+        std::string csv_file = argv[4]; // e.g., b_movies.csv
+        
+        RunServer(b_addr, c_addr, d_addr, csv_file);
+    } catch (const std::exception& e) {
+        std::cerr << "[B] ❌ Fatal error: " << e.what() << std::endl;
+        return 1;
+    }
     
-    RunServer(b_addr, c_addr, d_addr, csv_file);
     return 0;
 }
