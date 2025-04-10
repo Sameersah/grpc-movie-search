@@ -76,10 +76,24 @@ public:
         // Clean expired entries first
         clean_expired();
         
-        // Check if we need to evict entries due to size limits
+        // If entry already exists, update it
+        auto it = cache_.find(query);
+        if (it != cache_.end()) {
+            // Update existing entry
+            it->second.timestamp = std::chrono::system_clock::now();
+            it->second.response = std::make_shared<movie::SearchResponse>(response);
+            
+            // Move to front of LRU list
+            lru_list_.remove(query);
+            lru_list_.push_front(query);
+            return;
+        }
+        
+        // If we're at capacity, remove least recently used
         if (cache_.size() >= max_size_ && !lru_list_.empty()) {
             // Remove least recently used entry
             const std::string& oldest = lru_list_.back();
+            std::cout << "Evicting oldest entry: " << oldest << std::endl;
             cache_.erase(oldest);
             lru_list_.pop_back();
         }
@@ -91,8 +105,7 @@ public:
         
         cache_[query] = std::move(entry);
         
-        // Update LRU tracking
-        lru_list_.remove(query); // In case it was already there
+        // Add to front of LRU list
         lru_list_.push_front(query);
     }
     

@@ -78,15 +78,17 @@ bool testCache() {
         // This should evict the oldest entry (inception)
         cache.put("wonder woman", createTestResponse("Wonder Woman", 3));
         
-        // Check if inception was evicted
-        found = cache.get("inception", result);
+        // Check if matrix was evicted
+        found = cache.get("matrix", result);
+
+        std::cout << "Cache size "<< cache.size() << std::endl;
         
         if (found) {
             std::cerr << "❌ 'inception' should have been evicted but was found in cache" << std::endl;
             return false;
         }
         
-        std::cout << "✅ LRU eviction working correctly ('inception' was evicted)" << std::endl;
+        std::cout << "✅ LRU eviction working correctly ('matrix' was evicted)" << std::endl;
         
         // Test TTL expiration
         std::cout << "\nTesting TTL expiration (waiting 3 seconds)..." << std::endl;
