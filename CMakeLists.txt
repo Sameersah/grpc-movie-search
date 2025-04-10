@@ -154,3 +154,16 @@
         # Make the test runnable with 'make test'
         # enable_testing()
         # add_test(NAME movie_search_test COMMAND test_movie_search)
+
+
+        # Performance test executable
+        add_executable(performance_test
+                scripts/performance_test.cpp
+                ${COMMON_SOURCES}
+        )
+
+        target_link_libraries(performance_test
+                gRPC::grpc++
+                protobuf::libprotobuf
+                Threads::Threads
+        )
