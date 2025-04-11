@@ -1,0 +1,64 @@
+Running performance tests against 127.0.0.1:50001...
+
+=== Cold Cache Test ===
+⏱️ Search for 'inception' took 893 ms
+⏱️ Search for 'interstellar' took 831 ms
+⏱️ Search for 'dark knight' took 789 ms
+⏱️ Search for 'shawshank' took 813 ms
+⏱️ Search for 'matrix' took 775 ms
+⏱️ Search for 'sci-fi' took 808 ms
+⏱️ Search for 'comedy' took 804 ms
+⏱️ Search for 'action' took 839 ms
+⏱️ Search for 'spielberg' took 814 ms
+⏱️ Search for 'kubrick' took 745 ms
+
+=== Warm Cache Test ===
+⏱️ Search for 'inception' took 836 ms
+⏱️ Search for 'inception' took 0 ms
+⏱️ Search for 'inception' took 0 ms
+⏱️ Search for 'interstellar' took 830 ms
+⏱️ Search for 'interstellar' took 0 ms
+⏱️ Search for 'interstellar' took 0 ms
+⏱️ Search for 'dark knight' took 788 ms
+⏱️ Search for 'dark knight' took 0 ms
+⏱️ Search for 'dark knight' took 0 ms
+⏱️ Search for 'shawshank' took 813 ms
+⏱️ Search for 'shawshank' took 0 ms
+⏱️ Search for 'shawshank' took 0 ms
+⏱️ Search for 'matrix' took 772 ms
+⏱️ Search for 'matrix' took 0 ms
+⏱️ Search for 'matrix' took 0 ms
+⏱️ Search for 'sci-fi' took 810 ms
+⏱️ Search for 'sci-fi' took 0 ms
+⏱️ Search for 'sci-fi' took 0 ms
+⏱️ Search for 'comedy' took 802 ms
+⏱️ Search for 'comedy' took 25 ms
+⏱️ Search for 'comedy' took 24 ms
+⏱️ Search for 'action' took 838 ms
+⏱️ Search for 'action' took 12 ms
+⏱️ Search for 'action' took 12 ms
+⏱️ Search for 'spielberg' took 815 ms
+⏱️ Search for 'spielberg' took 0 ms
+⏱️ Search for 'spielberg' took 0 ms
+⏱️ Search for 'kubrick' took 743 ms
+⏱️ Search for 'kubrick' took 0 ms
+⏱️ Search for 'kubrick' took 0 ms
+
+====== Performance Test Report ======
+
+Query               Avg (ms)  Min (ms)  Max (ms)  Results   Comm Type                Runs      
+-------------------------------------------------------------------------------------
+action              425.25    12.00     839.00    14779     Likely gRPC              4         
+spielberg           407.25    0.00      815.00    32        Likely Cache or SharedMemory4         
+comedy              413.75    24.00     804.00    30138     Likely gRPC              4         
+matrix              386.75    0.00      775.00    69        Likely Cache or SharedMemory4         
+sci-fi              404.50    0.00      810.00    281       Likely Cache or SharedMemory4         
+dark knight         394.25    0.00      789.00    10        Likely Cache or SharedMemory4         
+interstellar        415.25    0.00      831.00    31        Likely Cache or SharedMemory4         
+shawshank           406.50    0.00      813.00    3         Likely Cache or SharedMemory4         
+kubrick             372.00    0.00      745.00    37        Likely Cache or SharedMemory4         
+inception           432.25    0.00      893.00    59        Likely Cache or SharedMemory4         
+
+===================================
+
+Results written to ./performance_results/single_node_shm_no_cache_results.csv

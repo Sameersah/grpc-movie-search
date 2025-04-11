@@ -1,0 +1,170 @@
+[A] Starting server on 127.0.0.1:50001
+[A] Will connect to server B at 127.0.0.1:50002
+[A] Cache TTL: 300 seconds, max size: 100 entries
+[A] Server B is on local machine, using shared memory communication
+[A] ❌ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
+Loaded 240920 movies from ./data/A_data.csv
+[A] Successfully loaded movies from ./data/A_data.csv
+[A] ⚠️ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
+[A] ⚠️ Will continue without shared memory
+[A] Server listening on 127.0.0.1:50001
+[A] Received query: "inception"
+[A] 🔍 Cache miss for query: "inception"
+[A] Found 59 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 59 total results to client
+[A] Query completed in 879ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 1 misses, 0.00% hit ratio
+[A] Received query: "interstellar"
+[A] 🔍 Cache miss for query: "interstellar"
+[A] Found 31 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 31 total results to client
+[A] Query completed in 829ms (from search)
+[A] Cache stats: 2 entries, 0 hits, 2 misses, 0.00% hit ratio
+[A] Received query: "dark knight"
+[A] 🔍 Cache miss for query: "dark knight"
+[A] Found 10 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 10 total results to client
+[A] Query completed in 788ms (from search)
+[A] Cache stats: 3 entries, 0 hits, 3 misses, 0.00% hit ratio
+[A] Received query: "shawshank"
+[A] 🔍 Cache miss for query: "shawshank"
+[A] Found 3 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 3 total results to client
+[A] Query completed in 816ms (from search)
+[A] Cache stats: 4 entries, 0 hits, 4 misses, 0.00% hit ratio
+[A] Received query: "matrix"
+[A] 🔍 Cache miss for query: "matrix"
+[A] Found 69 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 69 total results to client
+[A] Query completed in 772ms (from search)
+[A] Cache stats: 5 entries, 0 hits, 5 misses, 0.00% hit ratio
+[A] Received query: "sci-fi"
+[A] 🔍 Cache miss for query: "sci-fi"
+[A] Found 281 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 281 total results to client
+[A] Query completed in 808ms (from search)
+[A] Cache stats: 6 entries, 0 hits, 6 misses, 0.00% hit ratio
+[A] Received query: "comedy"
+[A] 🔍 Cache miss for query: "comedy"
+[A] Found 30138 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 30138 total results to client
+[A] Query completed in 790ms (from search)
+[A] Cache stats: 7 entries, 0 hits, 7 misses, 0.00% hit ratio
+[A] Received query: "action"
+[A] 🔍 Cache miss for query: "action"
+[A] Found 14779 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 14779 total results to client
+[A] Query completed in 831ms (from search)
+[A] Cache stats: 8 entries, 0 hits, 8 misses, 0.00% hit ratio
+[A] Received query: "spielberg"
+[A] 🔍 Cache miss for query: "spielberg"
+[A] Found 32 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 32 total results to client
+[A] Query completed in 821ms (from search)
+[A] Cache stats: 9 entries, 0 hits, 9 misses, 0.00% hit ratio
+[A] Received query: "kubrick"
+[A] 🔍 Cache miss for query: "kubrick"
+[A] Found 37 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 37 total results to client
+[A] Query completed in 750ms (from search)
+[A] Cache stats: 10 entries, 0 hits, 10 misses, 0.00% hit ratio
+[A] Received query: "inception"
+[A] 🎯 Cache hit for query: "inception"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "inception"
+[A] 🎯 Cache hit for query: "inception"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "inception"
+[A] 🎯 Cache hit for query: "inception"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "interstellar"
+[A] 🎯 Cache hit for query: "interstellar"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "interstellar"
+[A] 🎯 Cache hit for query: "interstellar"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "interstellar"
+[A] 🎯 Cache hit for query: "interstellar"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "dark knight"
+[A] 🎯 Cache hit for query: "dark knight"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "dark knight"
+[A] 🎯 Cache hit for query: "dark knight"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "dark knight"
+[A] 🎯 Cache hit for query: "dark knight"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "shawshank"
+[A] 🎯 Cache hit for query: "shawshank"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "shawshank"
+[A] 🎯 Cache hit for query: "shawshank"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "shawshank"
+[A] 🎯 Cache hit for query: "shawshank"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "matrix"
+[A] 🎯 Cache hit for query: "matrix"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "matrix"
+[A] 🎯 Cache hit for query: "matrix"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "matrix"
+[A] 🎯 Cache hit for query: "matrix"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "sci-fi"
+[A] 🎯 Cache hit for query: "sci-fi"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "sci-fi"
+[A] 🎯 Cache hit for query: "sci-fi"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "sci-fi"
+[A] 🎯 Cache hit for query: "sci-fi"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "comedy"
+[A] 🎯 Cache hit for query: "comedy"
+[A] Query completed in 9ms (from cache)
+[A] Received query: "comedy"
+[A] 🎯 Cache hit for query: "comedy"
+[A] Query completed in 5ms (from cache)
+[A] Received query: "comedy"
+[A] 🎯 Cache hit for query: "comedy"
+[A] Query completed in 4ms (from cache)
+[A] Received query: "action"
+[A] 🎯 Cache hit for query: "action"
+[A] Query completed in 2ms (from cache)
+[A] Received query: "action"
+[A] 🎯 Cache hit for query: "action"
+[A] Query completed in 2ms (from cache)
+[A] Received query: "action"
+[A] 🎯 Cache hit for query: "action"
+[A] Query completed in 2ms (from cache)
+[A] Received query: "spielberg"
+[A] 🎯 Cache hit for query: "spielberg"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "spielberg"
+[A] 🎯 Cache hit for query: "spielberg"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "spielberg"
+[A] 🎯 Cache hit for query: "spielberg"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "kubrick"
+[A] 🎯 Cache hit for query: "kubrick"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "kubrick"
+[A] 🎯 Cache hit for query: "kubrick"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "kubrick"
+[A] 🎯 Cache hit for query: "kubrick"
+[A] Query completed in 0ms (from cache)

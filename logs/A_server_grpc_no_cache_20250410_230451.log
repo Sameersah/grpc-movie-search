@@ -1,0 +1,228 @@
+[A] Starting server on 127.0.0.1:50001
+[A] Will connect to server B at 127.0.0.1:50002
+[A] Cache TTL: 1 seconds, max size: 1 entries
+[A] Server B is on local machine, using shared memory communication
+[A] ❌ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
+Loaded 240920 movies from ./data/A_data.csv
+[A] Successfully loaded movies from ./data/A_data.csv
+[A] ⚠️ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
+[A] ⚠️ Will continue without shared memory
+[A] Server listening on 127.0.0.1:50001
+[A] Received query: "inception"
+[A] 🔍 Cache miss for query: "inception"
+[A] Found 59 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 59 total results to client
+[A] Query completed in 899ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 1 misses, 0.00% hit ratio
+[A] Received query: "interstellar"
+[A] 🔍 Cache miss for query: "interstellar"
+[A] Found 31 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: inception
+[A] Returning 31 total results to client
+[A] Query completed in 832ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 2 misses, 0.00% hit ratio
+[A] Received query: "dark knight"
+[A] 🔍 Cache miss for query: "dark knight"
+[A] Found 10 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: interstellar
+[A] Returning 10 total results to client
+[A] Query completed in 789ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 3 misses, 0.00% hit ratio
+[A] Received query: "shawshank"
+[A] 🔍 Cache miss for query: "shawshank"
+[A] Found 3 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: dark knight
+[A] Returning 3 total results to client
+[A] Query completed in 815ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 4 misses, 0.00% hit ratio
+[A] Received query: "matrix"
+[A] 🔍 Cache miss for query: "matrix"
+[A] Found 69 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: shawshank
+[A] Returning 69 total results to client
+[A] Query completed in 770ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 5 misses, 0.00% hit ratio
+[A] Received query: "sci-fi"
+[A] 🔍 Cache miss for query: "sci-fi"
+[A] Found 281 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: matrix
+[A] Returning 281 total results to client
+[A] Query completed in 809ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 6 misses, 0.00% hit ratio
+[A] Received query: "comedy"
+[A] 🔍 Cache miss for query: "comedy"
+[A] Found 30138 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: sci-fi
+[A] Returning 30138 total results to client
+[A] Query completed in 788ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 7 misses, 0.00% hit ratio
+[A] Received query: "action"
+[A] 🔍 Cache miss for query: "action"
+[A] Found 14779 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: comedy
+[A] Returning 14779 total results to client
+[A] Query completed in 832ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 8 misses, 0.00% hit ratio
+[A] Received query: "spielberg"
+[A] 🔍 Cache miss for query: "spielberg"
+[A] Found 32 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: action
+[A] Returning 32 total results to client
+[A] Query completed in 815ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 9 misses, 0.00% hit ratio
+[A] Received query: "kubrick"
+[A] 🔍 Cache miss for query: "kubrick"
+[A] Found 37 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: spielberg
+[A] Returning 37 total results to client
+[A] Query completed in 744ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 10 misses, 0.00% hit ratio
+[A] Received query: "inception"
+[A] 🔍 Cache miss for query: "inception"
+[A] Found 59 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+[A] Returning 59 total results to client
+[A] Query completed in 844ms (from search)
+[A] Cache stats: 1 entries, 0 hits, 11 misses, 0.00% hit ratio
+[A] Received query: "inception"
+[A] 🎯 Cache hit for query: "inception"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "inception"
+[A] 🎯 Cache hit for query: "inception"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "interstellar"
+[A] 🔍 Cache miss for query: "interstellar"
+[A] Found 31 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: inception
+[A] Returning 31 total results to client
+[A] Query completed in 832ms (from search)
+[A] Cache stats: 1 entries, 2 hits, 12 misses, 14.29% hit ratio
+[A] Received query: "interstellar"
+[A] 🎯 Cache hit for query: "interstellar"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "interstellar"
+[A] 🎯 Cache hit for query: "interstellar"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "dark knight"
+[A] 🔍 Cache miss for query: "dark knight"
+[A] Found 10 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: interstellar
+[A] Returning 10 total results to client
+[A] Query completed in 793ms (from search)
+[A] Cache stats: 1 entries, 4 hits, 13 misses, 23.53% hit ratio
+[A] Received query: "dark knight"
+[A] 🎯 Cache hit for query: "dark knight"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "dark knight"
+[A] 🎯 Cache hit for query: "dark knight"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "shawshank"
+[A] 🔍 Cache miss for query: "shawshank"
+[A] Found 3 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: dark knight
+[A] Returning 3 total results to client
+[A] Query completed in 816ms (from search)
+[A] Cache stats: 1 entries, 6 hits, 14 misses, 30.00% hit ratio
+[A] Received query: "shawshank"
+[A] 🎯 Cache hit for query: "shawshank"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "shawshank"
+[A] 🎯 Cache hit for query: "shawshank"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "matrix"
+[A] 🔍 Cache miss for query: "matrix"
+[A] Found 69 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: shawshank
+[A] Returning 69 total results to client
+[A] Query completed in 773ms (from search)
+[A] Cache stats: 1 entries, 8 hits, 15 misses, 34.78% hit ratio
+[A] Received query: "matrix"
+[A] 🎯 Cache hit for query: "matrix"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "matrix"
+[A] 🎯 Cache hit for query: "matrix"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "sci-fi"
+[A] 🔍 Cache miss for query: "sci-fi"
+[A] Found 281 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: matrix
+[A] Returning 281 total results to client
+[A] Query completed in 811ms (from search)
+[A] Cache stats: 1 entries, 10 hits, 16 misses, 38.46% hit ratio
+[A] Received query: "sci-fi"
+[A] 🎯 Cache hit for query: "sci-fi"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "sci-fi"
+[A] 🎯 Cache hit for query: "sci-fi"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "comedy"
+[A] 🔍 Cache miss for query: "comedy"
+[A] Found 30138 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: sci-fi
+[A] Returning 30138 total results to client
+[A] Query completed in 782ms (from search)
+[A] Cache stats: 1 entries, 12 hits, 17 misses, 41.38% hit ratio
+[A] Received query: "comedy"
+[A] 🎯 Cache hit for query: "comedy"
+[A] Query completed in 4ms (from cache)
+[A] Received query: "comedy"
+[A] 🎯 Cache hit for query: "comedy"
+[A] Query completed in 4ms (from cache)
+[A] Received query: "action"
+[A] 🔍 Cache miss for query: "action"
+[A] Found 14779 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: comedy
+[A] Returning 14779 total results to client
+[A] Query completed in 830ms (from search)
+[A] Cache stats: 1 entries, 14 hits, 18 misses, 43.75% hit ratio
+[A] Received query: "action"
+[A] 🎯 Cache hit for query: "action"
+[A] Query completed in 2ms (from cache)
+[A] Received query: "action"
+[A] 🎯 Cache hit for query: "action"
+[A] Query completed in 2ms (from cache)
+[A] Received query: "spielberg"
+[A] 🔍 Cache miss for query: "spielberg"
+[A] Found 32 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: action
+[A] Returning 32 total results to client
+[A] Query completed in 815ms (from search)
+[A] Cache stats: 1 entries, 16 hits, 19 misses, 45.71% hit ratio
+[A] Received query: "spielberg"
+[A] 🎯 Cache hit for query: "spielberg"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "spielberg"
+[A] 🎯 Cache hit for query: "spielberg"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "kubrick"
+[A] 🔍 Cache miss for query: "kubrick"
+[A] Found 37 matches in local data
+[A] ⚠️ Skipping forward to server B - connection is down
+Evicting oldest entry: spielberg
+[A] Returning 37 total results to client
+[A] Query completed in 745ms (from search)
+[A] Cache stats: 1 entries, 18 hits, 20 misses, 47.37% hit ratio
+[A] Received query: "kubrick"
+[A] 🎯 Cache hit for query: "kubrick"
+[A] Query completed in 0ms (from cache)
+[A] Received query: "kubrick"
+[A] 🎯 Cache hit for query: "kubrick"
+[A] Query completed in 0ms (from cache)
