@@ -7,9 +7,14 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <thread>
+#include <atomic>
+#include <unordered_set>
 #include <grpcpp/grpcpp.h>
 #include "movie.grpc.pb.h"
-#include "movie_struct.h" // Include our new movie structure header
+#include "movie_struct.h"
+#include "posix_shared_memory.h"
+#include "response_serializer.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -24,25 +29,41 @@ using movie::SearchRequest;
 using movie::SearchResponse;
 using movie::MovieInfo;
 
+// Shared memory structures
+struct SharedRequest {
+    static const int MAX_QUERY_SIZE = 256;
+    char query[MAX_QUERY_SIZE];
+    uint64_t request_id;
+    bool processed;
+};
+
+struct SharedResponse {
+    static const int MAX_RESPONSE_SIZE = 8192;
+    char serialized_response[MAX_RESPONSE_SIZE];
+    size_t response_size;
+    uint64_t request_id;
+    bool valid;
+};
+
 // Helper function to check if a movie matches a query
 bool movieMatchesQuery(const Movie& movie, const std::string& query) {
     // Convert query and relevant fields to lowercase for case-insensitive comparison
     std::string lowerQuery = query;
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
-    
+
     std::string lowerTitle = movie.title;
     std::transform(lowerTitle.begin(), lowerTitle.end(), lowerTitle.begin(), ::tolower);
-    
+
     std::string lowerGenres = movie.genres;
     std::transform(lowerGenres.begin(), lowerGenres.end(), lowerGenres.begin(), ::tolower);
-    
+
     std::string lowerOverview = movie.overview;
     std::transform(lowerOverview.begin(), lowerOverview.end(), lowerOverview.begin(), ::tolower);
-    
+
     std::string lowerKeywords = movie.keywords;
     std::transform(lowerKeywords.begin(), lowerKeywords.end(), lowerKeywords.begin(), ::tolower);
-    
-    return 
+
+    return
         lowerTitle.find(lowerQuery) != std::string::npos ||
         lowerGenres.find(lowerQuery) != std::string::npos ||
         lowerOverview.find(lowerQuery) != std::string::npos ||
@@ -59,16 +80,16 @@ public:
         ping.set_title("__ping__");
         SearchResponse pong;
         ClientContext context;
-        
+
         std::cout << "[B] Testing connection to server C..." << std::endl;
         Status status = stub_->Search(&context, ping, &pong);
-        
+
         if (status.ok()) {
             std::cout << "[B] ✅ Successfully connected to server C" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[B] ❌ Failed to connect to server C: " 
-                     << status.error_message() 
+            std::cerr << "[B] ❌ Failed to connect to server C: "
+                     << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
                 std::cerr << "[B] 🔍 This usually means server C is not running or the address is incorrect" << std::endl;
@@ -82,25 +103,25 @@ public:
         request.set_title(title);
         SearchResponse response;
         ClientContext context;
-        
+
         // Set a timeout for the request (5 seconds)
-        std::chrono::system_clock::time_point deadline = 
+        std::chrono::system_clock::time_point deadline =
             std::chrono::system_clock::now() + std::chrono::seconds(5);
         context.set_deadline(deadline);
 
         std::cout << "[B] Sending request to server C: \"" << title << "\"" << std::endl;
         Status status = stub_->Search(&context, request, &response);
-        
+
         if (!status.ok()) {
-            std::cerr << "[B → C] gRPC call failed: " << status.error_message() 
+            std::cerr << "[B → C] gRPC call failed: " << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
-            
+
             if (status.error_code() == StatusCode::DEADLINE_EXCEEDED) {
                 std::cerr << "[B] 🕒 Request timed out. Server C might be overloaded or unresponsive." << std::endl;
             } else if (status.error_code() == StatusCode::UNAVAILABLE) {
                 std::cerr << "[B] 🔌 Server C is unavailable. Network issue or server not running." << std::endl;
             }
-            
+
             connected_ = false;
         } else {
             connected_ = true;
@@ -129,16 +150,16 @@ public:
         ping.set_title("__ping__");
         SearchResponse pong;
         ClientContext context;
-        
+
         std::cout << "[B] Testing connection to server D..." << std::endl;
         Status status = stub_->Search(&context, ping, &pong);
-        
+
         if (status.ok()) {
             std::cout << "[B] ✅ Successfully connected to server D" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[B] ❌ Failed to connect to server D: " 
-                     << status.error_message() 
+            std::cerr << "[B] ❌ Failed to connect to server D: "
+                     << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
                 std::cerr << "[B] 🔍 This usually means server D is not running or the address is incorrect" << std::endl;
@@ -152,25 +173,25 @@ public:
         request.set_title(title);
         SearchResponse response;
         ClientContext context;
-        
+
         // Set a timeout for the request (5 seconds)
-        std::chrono::system_clock::time_point deadline = 
+        std::chrono::system_clock::time_point deadline =
             std::chrono::system_clock::now() + std::chrono::seconds(5);
         context.set_deadline(deadline);
 
         std::cout << "[B] Sending request to server D: \"" << title << "\"" << std::endl;
         Status status = stub_->Search(&context, request, &response);
-        
+
         if (!status.ok()) {
-            std::cerr << "[B → D] gRPC call failed: " << status.error_message() 
+            std::cerr << "[B → D] gRPC call failed: " << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
-            
+
             if (status.error_code() == StatusCode::DEADLINE_EXCEEDED) {
                 std::cerr << "[B] 🕒 Request timed out. Server D might be overloaded or unresponsive." << std::endl;
             } else if (status.error_code() == StatusCode::UNAVAILABLE) {
                 std::cerr << "[B] 🔌 Server D is unavailable. Network issue or server not running." << std::endl;
             }
-            
+
             connected_ = false;
         } else {
             connected_ = true;
@@ -303,13 +324,178 @@ private:
     std::vector<Movie> movies_;
 };
 
-void RunServer(const std::string& server_address, const std::string& c_address, 
+// Shared memory listener for Server B
+class SharedMemoryListener {
+public:
+    SharedMemoryListener(MovieSearchServiceImpl* service)
+        : service_(service), running_(false) {}
+
+    ~SharedMemoryListener() {
+        Stop();
+    }
+
+    void Start() {
+        if (running_) return;
+
+        try {
+            // Open shared memory segments
+            requests_shm_ = std::make_unique<PosixSharedMemory>("/movie_ab_requests", 1024 * 1024, true);
+            responses_shm_ = std::make_unique<PosixSharedMemory>("/movie_ab_responses", 5 * 1024 * 1024, true);
+
+            running_ = true;
+            listener_thread_ = std::thread(&SharedMemoryListener::ListenerLoop, this);
+            std::cout << "[B] Shared memory listener started" << std::endl;
+        } catch (const std::exception& e) {
+            std::cerr << "[B] Failed to initialize shared memory listener: " << e.what() << std::endl;
+        }
+    }
+
+    void Stop() {
+        running_ = false;
+        if (listener_thread_.joinable()) {
+            listener_thread_.join();
+        }
+    }
+
+private:
+    void ListenerLoop() {
+        std::cout << "[B] Shared memory listener thread started" << std::endl;
+
+        // Track which request IDs we've seen
+        std::unordered_set<uint64_t> processed_requests;
+
+        while (running_) {
+            try {
+                // Scan for new entries every 100ms
+                auto start_time = std::chrono::steady_clock::now();
+                bool found_new_request = false;
+
+                // Note: In a real implementation, you might want a more efficient
+                // way to discover new requests instead of polling
+                for (uint64_t id = 1; id < 10000; id++) {
+                    std::string key = std::to_string(id);
+
+                    // Skip if we've already processed this request
+                    if (processed_requests.find(id) != processed_requests.end()) {
+                        continue;
+                    }
+
+                    // Check if request exists
+                    std::vector<uint8_t> req_data;
+                    if (requests_shm_->read(key, req_data)) {
+                        if (req_data.size() >= sizeof(SharedRequest)) {
+                            SharedRequest request;
+                            memcpy(&request, req_data.data(), sizeof(SharedRequest));
+
+                            // Skip if already processed
+                            if (request.processed) {
+                                processed_requests.insert(id);
+                                continue;
+                            }
+
+                            found_new_request = true;
+
+                            // Mark as processed
+                            request.processed = true;
+                            memcpy(req_data.data(), &request, sizeof(SharedRequest));
+                            requests_shm_->write(key, req_data);
+
+                            // Process request
+                            std::string query = request.query;
+                            std::cout << "[B] Received shared memory request: \"" << query
+                                    << "\" (ID: " << id << ")" << std::endl;
+
+                            // Special handling for ping
+                            if (query == "__ping__") {
+                                SharedResponse response{};
+                                response.request_id = id;
+                                response.response_size = 0;
+                                response.valid = true;
+
+                                // Write empty response
+                                std::vector<uint8_t> resp_data(sizeof(SharedResponse));
+                                memcpy(resp_data.data(), &response, sizeof(SharedResponse));
+                                responses_shm_->write(key, resp_data);
+                                std::cout << "[B] Responded to ping request" << std::endl;
+
+                                processed_requests.insert(id);
+                                continue;
+                            }
+
+                            // Regular search request
+                            movie::SearchRequest grpc_req;
+                            grpc_req.set_title(query);
+                            movie::SearchResponse grpc_resp;
+                            grpc::ServerContext ctx;
+
+                            // Process using the standard service implementation
+                            service_->Search(&ctx, &grpc_req, &grpc_resp);
+
+ // Prepare response
+                            SharedResponse response{};
+                            response.request_id = id;
+                            response.valid = true;
+
+                            // Serialize search response
+                            std::vector<uint8_t> serialized = ResponseSerializer::serialize(grpc_resp);
+                            if (serialized.size() <= SharedResponse::MAX_RESPONSE_SIZE) {
+                                response.response_size = serialized.size();
+                                memcpy(response.serialized_response, serialized.data(), serialized.size());
+                            } else {
+                                std::cerr << "[B] Response too large for shared memory buffer" << std::endl;
+                                response.valid = false;
+                                response.response_size = 0;
+                            }
+
+                            // Write response to shared memory
+                            std::vector<uint8_t> resp_data(sizeof(SharedResponse));
+                            memcpy(resp_data.data(), &response, sizeof(SharedResponse));
+                            responses_shm_->write(key, resp_data);
+
+                            std::cout << "[B] Wrote response with " << grpc_resp.results_size()
+                                     << " results to shared memory" << std::endl;
+
+                            // Remember we've processed this request
+                            processed_requests.insert(id);
+
+                            // Keep processed_requests from growing too large
+                            if (processed_requests.size() > 1000) {
+                                auto oldest = processed_requests.begin();
+                                processed_requests.erase(oldest);
+                            }
+                        }
+                    }
+                }
+
+                // If no new requests, sleep for a bit
+                if (!found_new_request) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "[B] Error in shared memory listener: " << e.what() << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        }
+    }
+
+    MovieSearchServiceImpl* service_;
+    std::unique_ptr<PosixSharedMemory> requests_shm_;
+    std::unique_ptr<PosixSharedMemory> responses_shm_;
+    std::thread listener_thread_;
+    std::atomic<bool> running_;
+};
+
+void RunServer(const std::string& server_address, const std::string& c_address,
                const std::string& d_address, const std::string& csv_file) {
     std::cout << "[B] Starting server on " << server_address << std::endl;
     std::cout << "[B] Will connect to server C at " << c_address << std::endl;
     std::cout << "[B] Will connect to server D at " << d_address << std::endl;
-    
+
     MovieSearchServiceImpl service(c_address, d_address, csv_file);
+
+    // Start shared memory listener
+    SharedMemoryListener shm_listener(&service);
+    shm_listener.Start();
 
     ServerBuilder builder;
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
@@ -322,6 +508,9 @@ void RunServer(const std::string& server_address, const std::string& c_address,
     } else {
         std::cerr << "[B] ❌ Failed to start server on " << server_address << std::endl;
     }
+
+    // Stop shared memory listener when server exits
+    shm_listener.Stop();
 }
 
 int main(int argc, char** argv) {
@@ -336,12 +525,18 @@ int main(int argc, char** argv) {
         std::string c_addr = argv[2]; // e.g., 192.168.0.4:5003
         std::string d_addr = argv[3]; // e.g., 192.168.0.4:5004
         std::string csv_file = argv[4]; // e.g., b_movies.csv
-        
+
+        // Register signal handler for cleanup
+        signal(SIGINT, [](int) {
+            std::cout << "\n[B] Exiting..." << std::endl;
+            exit(0);
+        });
+
         RunServer(b_addr, c_addr, d_addr, csv_file);
     } catch (const std::exception& e) {
         std::cerr << "[B] ❌ Fatal error: " << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

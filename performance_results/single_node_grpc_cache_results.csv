@@ -1,0 +1,41 @@
+Query,Duration(ms),ResultCount,Success,RunType,CommunicationType
+inception,882,59,true,cold,Likely gRPC
+interstellar,829,31,true,cold,Likely gRPC
+dark knight,788,10,true,cold,Likely gRPC
+shawshank,817,3,true,cold,Likely gRPC
+matrix,772,69,true,cold,Likely gRPC
+sci-fi,809,281,true,cold,Likely gRPC
+comedy,812,30138,true,cold,Likely gRPC
+action,841,14779,true,cold,Likely gRPC
+spielberg,821,32,true,cold,Likely gRPC
+kubrick,750,37,true,cold,Likely gRPC
+inception,1,59,true,warm,Likely Cache or SharedMemory
+inception,0,59,true,warm,Likely Cache or SharedMemory
+inception,0,59,true,warm,Likely Cache or SharedMemory
+interstellar,0,31,true,warm,Likely Cache or SharedMemory
+interstellar,0,31,true,warm,Likely Cache or SharedMemory
+interstellar,0,31,true,warm,Likely Cache or SharedMemory
+dark knight,0,10,true,warm,Likely Cache or SharedMemory
+dark knight,0,10,true,warm,Likely Cache or SharedMemory
+dark knight,0,10,true,warm,Likely Cache or SharedMemory
+shawshank,0,3,true,warm,Likely Cache or SharedMemory
+shawshank,0,3,true,warm,Likely Cache or SharedMemory
+shawshank,0,3,true,warm,Likely Cache or SharedMemory
+matrix,0,69,true,warm,Likely Cache or SharedMemory
+matrix,0,69,true,warm,Likely Cache or SharedMemory
+matrix,0,69,true,warm,Likely Cache or SharedMemory
+sci-fi,0,281,true,warm,Likely Cache or SharedMemory
+sci-fi,0,281,true,warm,Likely Cache or SharedMemory
+sci-fi,0,281,true,warm,Likely Cache or SharedMemory
+comedy,36,30138,true,warm,Likely gRPC
+comedy,26,30138,true,warm,Likely gRPC
+comedy,26,30138,true,warm,Likely gRPC
+action,12,14779,true,warm,Likely gRPC
+action,12,14779,true,warm,Likely gRPC
+action,12,14779,true,warm,Likely gRPC
+spielberg,0,32,true,warm,Likely Cache or SharedMemory
+spielberg,0,32,true,warm,Likely Cache or SharedMemory
+spielberg,0,32,true,warm,Likely Cache or SharedMemory
+kubrick,0,37,true,warm,Likely Cache or SharedMemory
+kubrick,0,37,true,warm,Likely Cache or SharedMemory
+kubrick,0,37,true,warm,Likely Cache or SharedMemory

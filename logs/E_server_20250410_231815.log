@@ -1,0 +1,8 @@
+[E] Starting server on 127.0.0.1:50005
+Loaded 240920 movies from ./data/E_data.csv
+[E] Successfully loaded movies from ./data/E_data.csv
+[E] Server listening on 127.0.0.1:50005
+[E] Received query: "__ping__"
+[E] Received ping request, sending empty response
+[E] Received query: "__ping__"
+[E] Received ping request, sending empty response

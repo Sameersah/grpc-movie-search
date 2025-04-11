@@ -1,0 +1,13 @@
+Configuration,NodeType,Communication,Cache,RunType,mean,min,max,count
+multi_node_grpc_cache,Multi Node,gRPC,Enabled,cold,2822.2,744,4168,10
+multi_node_grpc_cache,Multi Node,gRPC,Enabled,warm,4.233333333333333,0,33,30
+multi_node_grpc_no_cache,Multi Node,gRPC,Disabled,cold,2809.1,744,4139,10
+multi_node_grpc_no_cache,Multi Node,gRPC,Disabled,warm,271.0,0,847,30
+single_node_grpc_cache,Single Node,gRPC,Enabled,cold,812.1,750,882,10
+single_node_grpc_cache,Single Node,gRPC,Enabled,warm,4.166666666666667,0,36,30
+single_node_grpc_no_cache,Single Node,gRPC,Disabled,cold,807.0,744,849,10
+single_node_grpc_no_cache,Single Node,gRPC,Disabled,warm,271.1,0,845,30
+single_node_shm_cache,Single Node,Shared Memory,Enabled,cold,814.0,753,861,10
+single_node_shm_cache,Single Node,Shared Memory,Enabled,warm,4.133333333333334,0,36,30
+single_node_shm_no_cache,Single Node,Shared Memory,Disabled,cold,808.2,745,844,10
+single_node_shm_no_cache,Single Node,Shared Memory,Disabled,warm,274.06666666666666,0,845,30
