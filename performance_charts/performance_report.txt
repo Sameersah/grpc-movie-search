@@ -1,0 +1,47 @@
+# Performance Analysis Report
+
+## Overall Performance (Warm Runs)
+
+| Configuration | Node Type | Communication | Cache | Avg Response (ms) | Min | Max | Count |
+|---------------|-----------|---------------|-------|-------------------|-----|-----|-------|
+| multi_node_grpc_cache | Multi Node | gRPC | Enabled | 4.23 | 0.00 | 33.00 | 30 |
+| multi_node_grpc_no_cache | Multi Node | gRPC | Disabled | 271.00 | 0.00 | 847.00 | 30 |
+| single_node_grpc_cache | Single Node | gRPC | Enabled | 4.17 | 0.00 | 36.00 | 30 |
+| single_node_grpc_no_cache | Single Node | gRPC | Disabled | 271.10 | 0.00 | 845.00 | 30 |
+| single_node_shm_cache | Single Node | Shared Memory | Enabled | 4.13 | 0.00 | 36.00 | 30 |
+| single_node_shm_no_cache | Single Node | Shared Memory | Disabled | 274.07 | 0.00 | 845.00 | 30 |
+
+## Single Node: Communication Method Comparison
+
+
+With Cache Enabled:
+- gRPC: 4.17 ms
+- Shared Memory: 4.13 ms
+- Improvement: 0.80%
+
+With Cache Disabled:
+- gRPC: 271.10 ms
+- Shared Memory: 274.07 ms
+- Improvement: -1.09%
+
+## Multi-Node Performance
+
+
+With Cache Enabled:
+- gRPC: 4.23 ms
+
+With Cache Disabled:
+- gRPC: 271.00 ms
+
+## Single Node vs. Multi-Node Comparison (gRPC only)
+
+
+With Cache Enabled:
+- Single Node: 4.17 ms
+- Multi Node: 4.23 ms
+- Difference: 1.60% slower
+
+With Cache Disabled:
+- Single Node: 271.10 ms
+- Multi Node: 271.00 ms
+- Difference: -0.04% faster
