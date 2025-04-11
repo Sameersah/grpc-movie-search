@@ -72,6 +72,8 @@
         server/A_server.cpp
         ${COMMON_SOURCES}
         ${HEADERS}
+                server/ab_communication.h
+                server/ab_communication.cpp
         )
 
         target_link_libraries(A_server

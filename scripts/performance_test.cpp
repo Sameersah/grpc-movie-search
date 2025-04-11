@@ -7,10 +7,10 @@
 #include <algorithm>
 #include <numeric>
 #include <iomanip>
-#include <thread>       // Add this line to fix the error
-#include <unordered_map> // For the query grouping
+#include <thread>
 #include <grpcpp/grpcpp.h>
 #include "movie.grpc.pb.h"
+
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
@@ -52,6 +52,7 @@ public:
         double duration_ms;
         int result_count;
         bool success;
+        std::string communication_type; // "gRPC" or "SharedMemory" (inferred from server response)
     };
 
     PerformanceClient(std::shared_ptr<Channel> channel)
@@ -72,9 +73,18 @@ public:
         if (status.ok()) {
             result.success = true;
             result.result_count = response.results_size();
+
+            // Try to guess if shared memory was used based on response time
+            // This is a heuristic - in reality we can't know for sure from the client
+            if (result.duration_ms < 5 && query != "__ping__") {
+                result.communication_type = "Likely Cache or SharedMemory";
+            } else {
+                result.communication_type = "Likely gRPC";
+            }
         } else {
             result.success = false;
             result.result_count = 0;
+            result.communication_type = "Error";
             std::cerr << "RPC failed: " << status.error_message() << std::endl;
         }
 
@@ -99,19 +109,27 @@ public:
 
         // Group by query
         std::unordered_map<std::string, std::vector<double>> query_times;
+        std::unordered_map<std::string, int> query_results;
+        std::unordered_map<std::string, std::string> comm_types;
+
         for (const auto& result : results) {
             if (result.success) {
                 query_times[result.query].push_back(result.duration_ms);
+                query_results[result.query] = result.result_count;
+                comm_types[result.query] = result.communication_type;
             }
         }
 
         // Print results for each query
-        std::cout << std::left << std::setw(20) << "Query"
+        std::cout << std::left
+                  << std::setw(20) << "Query"
                   << std::setw(10) << "Avg (ms)"
                   << std::setw(10) << "Min (ms)"
                   << std::setw(10) << "Max (ms)"
+                  << std::setw(10) << "Results"
+                  << std::setw(25) << "Comm Type"
                   << std::setw(10) << "Runs" << std::endl;
-        std::cout << std::string(60, '-') << std::endl;
+        std::cout << std::string(85, '-') << std::endl;
 
         for (const auto& pair : query_times) {
             const auto& query = pair.first;
@@ -121,10 +139,13 @@ public:
             double min = *std::min_element(times.begin(), times.end());
             double max = *std::max_element(times.begin(), times.end());
 
-            std::cout << std::left << std::setw(20) << query
+            std::cout << std::left
+                      << std::setw(20) << query
                       << std::setw(10) << std::fixed << std::setprecision(2) << avg
                       << std::setw(10) << min
                       << std::setw(10) << max
+                      << std::setw(10) << query_results[query]
+                      << std::setw(25) << comm_types[query]
                       << std::setw(10) << times.size() << std::endl;
         }
 
@@ -145,18 +166,18 @@ int main(int argc, char** argv) {
     PerformanceClient client(
         grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials()));
 
-    // Define test queries
+    // Define test queries - using actual movie titles for more realistic tests
     std::vector<std::string> test_queries = {
-        "action",
-        "comedy",
-        "drama",
-        "sci-fi",
         "inception",
+        "interstellar",
+        "dark knight",
+        "shawshank",
         "matrix",
-        "star wars",
-        "adventure",
-        "thriller",
-        "horror"
+        "sci-fi",     // Genre search
+        "comedy",     // Genre search
+        "action",     // Genre search
+        "spielberg",  // Director search
+        "kubrick"     // Director search
     };
 
     // Run tests
@@ -184,14 +205,15 @@ int main(int argc, char** argv) {
     // Write results to CSV for further analysis
     std::ofstream csv_file(output_file);
     if (csv_file.is_open()) {
-        csv_file << "Query,Duration(ms),ResultCount,Success,RunType\n";
+        csv_file << "Query,Duration(ms),ResultCount,Success,RunType,CommunicationType\n";
 
         for (const auto& result : cold_results) {
             csv_file << result.query << ","
                      << result.duration_ms << ","
                      << result.result_count << ","
                      << (result.success ? "true" : "false") << ","
-                     << "cold\n";
+                     << "cold" << ","
+                     << result.communication_type << "\n";
         }
 
         for (const auto& result : warm_results) {
@@ -199,7 +221,8 @@ int main(int argc, char** argv) {
                      << result.duration_ms << ","
                      << result.result_count << ","
                      << (result.success ? "true" : "false") << ","
-                     << "warm\n";
+                     << "warm" << ","
+                     << result.communication_type << "\n";
         }
 
         csv_file.close();
