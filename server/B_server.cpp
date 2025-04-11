@@ -1,6 +1,8 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -201,72 +203,99 @@ public:
         }
     }
 
-    Status Search(ServerContext* context, const SearchRequest* request,
-                  SearchResponse* response) override {
-        std::string query = request->title();
-        std::cout << "[B] Received query: \"" << query << "\"" << std::endl;
-        
-        // Special case for ping
-        if (query == "__ping__") {
-            std::cout << "[B] Received ping request, sending empty response" << std::endl;
-            return Status::OK;
-        }
+// In B_server.cpp - Add deduplication logic in the Search method
 
-        // Search in B's local data
-        int localMatches = 0;
-        for (const auto& movie : movies_) {
-            if (movieMatchesQuery(movie, query)) {
-                MovieInfo* result = response->add_results();
-                result->set_title(movie.title);
-                result->set_director(movie.production_companies); // Using production companies as "director"
-                result->set_genre(movie.genres);
-                
-                // Parse year from release date (format: MM/DD/YY)
-                if (!movie.release_date.empty()) {
-                    try {
-                        result->set_year(2000 + std::stoi(movie.release_date.substr(movie.release_date.length() - 2)));
-                    } catch (...) {
-                        result->set_year(0); // Default if parsing fails
-                    }
-                }
-                localMatches++;
-            }
-        }
-        std::cout << "[B] Found " << localMatches << " matches in local data" << std::endl;
-
-        // Forward request to C if connected
-        if (c_client_.isConnected()) {
-            std::cout << "[B] Forwarding query to server C: \"" << query << "\"" << std::endl;
-            SearchResponse c_response = c_client_.Search(query);
-
-            int cMatches = 0;
-            for (const auto& movie : c_response.results()) {
-                *response->add_results() = movie;
-                cMatches++;
-            }
-            std::cout << "[B] Added " << cMatches << " results from server C" << std::endl;
-        } else {
-            std::cerr << "[B] ⚠️ Skipping forward to server C - connection is down" << std::endl;
-        }
-
-        // Forward request to D if connected
-        if (d_client_.isConnected()) {
-            std::cout << "[B] Forwarding query to server D: \"" << query << "\"" << std::endl;
-            SearchResponse d_response = d_client_.Search(query);
-
-            int dMatches = 0;
-            for (const auto& movie : d_response.results()) {
-                *response->add_results() = movie;
-                dMatches++;
-            }
-            std::cout << "[B] Added " << dMatches << " results from server D" << std::endl;
-        } else {
-            std::cerr << "[B] ⚠️ Skipping forward to server D - connection is down" << std::endl;
-        }
-
-        std::cout << "[B] Returning " << response->results_size() << " total results to server A" << std::endl;
+Status Search(ServerContext* context, const SearchRequest* request,
+              SearchResponse* response) override {
+    std::string query = request->title();
+    std::cout << "[B] Received query: \"" << query << "\"" << std::endl;
+    
+    // Special case for ping
+    if (query == "__ping__") {
+        std::cout << "[B] Received ping request, sending empty response" << std::endl;
         return Status::OK;
     }
+
+    // Search in B's local data
+    int localMatches = 0;
+    for (const auto& movie : movies_) {
+        if (movieMatchesQuery(movie, query)) {
+            MovieInfo* result = response->add_results();
+            result->set_title(movie.title);
+            result->set_director(movie.production_companies);
+            result->set_genre(movie.genres);
+            
+            // Parse year from release date
+            if (!movie.release_date.empty()) {
+                try {
+                    result->set_year(2000 + std::stoi(movie.release_date.substr(movie.release_date.length() - 2)));
+                } catch (...) {
+                    result->set_year(0); // Default if parsing fails
+                }
+            }
+            localMatches++;
+        }
+    }
+    std::cout << "[B] Found " << localMatches << " matches in local data" << std::endl;
+
+    // Store all results in a map to track unique movies (by title)
+    std::unordered_map<std::string, MovieInfo> uniqueMovies;
+    
+    // Add B's results to uniqueMovies map
+    for (int i = 0; i < response->results_size(); i++) {
+        const MovieInfo& movie = response->results(i);
+        uniqueMovies[movie.title()] = movie;
+    }
+
+    // Forward request to C if connected
+    if (c_client_.isConnected()) {
+        std::cout << "[B] Forwarding query to server C: \"" << query << "\"" << std::endl;
+        SearchResponse c_response = c_client_.Search(query);
+
+        int cMatches = 0;
+        for (const auto& movie : c_response.results()) {
+            // Check if this movie is already in our results
+            if (uniqueMovies.find(movie.title()) == uniqueMovies.end()) {
+                uniqueMovies[movie.title()] = movie;
+                cMatches++;
+            } else {
+                std::cout << "[B] ⚠️ Duplicate movie skipped: " << movie.title() << std::endl;
+            }
+        }
+        std::cout << "[B] Added " << cMatches << " unique results from server C" << std::endl;
+    } else {
+        std::cerr << "[B] ⚠️ Skipping forward to server C - connection is down" << std::endl;
+    }
+
+    // Forward request to D if connected
+    if (d_client_.isConnected()) {
+        std::cout << "[B] Forwarding query to server D: \"" << query << "\"" << std::endl;
+        SearchResponse d_response = d_client_.Search(query);
+
+        int dMatches = 0;
+        for (const auto& movie : d_response.results()) {
+            // Check if this movie is already in our results
+            if (uniqueMovies.find(movie.title()) == uniqueMovies.end()) {
+                uniqueMovies[movie.title()] = movie;
+                dMatches++;
+            } else {
+                std::cout << "[B] ⚠️ Duplicate movie skipped: " << movie.title() << std::endl;
+            }
+        }
+        std::cout << "[B] Added " << dMatches << " unique results from server D" << std::endl;
+    } else {
+        std::cerr << "[B] ⚠️ Skipping forward to server D - connection is down" << std::endl;
+    }
+
+    // Clear the original response and rebuild with unique movies
+    response->clear_results();
+    for (const auto& pair : uniqueMovies) {
+        *response->add_results() = pair.second;
+    }
+
+    std::cout << "[B] Returning " << response->results_size() << " deduplicated results to server A" << std::endl;
+    return Status::OK;
+}
 
 private:
     CClient c_client_;
