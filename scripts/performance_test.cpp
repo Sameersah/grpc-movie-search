@@ -73,9 +73,6 @@ public:
         if (status.ok()) {
             result.success = true;
             result.result_count = response.results_size();
-
-            // Try to guess if shared memory was used based on response time
-            // This is a heuristic - in reality we can't know for sure from the client
             if (result.duration_ms < 5 && query != "__ping__") {
                 result.communication_type = "Likely Cache or SharedMemory";
             } else {

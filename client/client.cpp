@@ -70,7 +70,7 @@ public:
                 }
             }
         } else {
-            std::cerr << "❌ gRPC failed: " << status.error_message() << std::endl;
+            std::cerr << "gRPC failed: " << status.error_message() << std::endl;
         }
     }
 
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     MovieClient client(grpc::CreateChannel(a_address, grpc::InsecureChannelCredentials()));
 
     std::string query;
-    std::cout << "🔍 Enter search term (title, genre, keywords): ";
+    std::cout << "Enter search term (title, genre, keywords): ";
     std::getline(std::cin, query);
 
     client.SearchMovie(query);

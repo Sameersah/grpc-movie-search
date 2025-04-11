@@ -53,7 +53,7 @@ public:
             movies_ = loadMoviesFromCSV(csv_file);
             std::cout << "[E] Successfully loaded movies from " << csv_file << std::endl;
         } catch (const std::exception& e) {
-            std::cerr << "[E] ❌ Error loading movies: " << e.what() << std::endl;
+            std::cerr << "[E]  Error loading movies: " << e.what() << std::endl;
         }
     }
 
@@ -112,7 +112,7 @@ void RunServer(const std::string& server_address, const std::string& csv_file) {
         std::cout << "[E] Server listening on " << server_address << std::endl;
         server->Wait();
     } else {
-        std::cerr << "[E] ❌ Failed to start server on " << server_address << std::endl;
+        std::cerr << "[E]  Failed to start server on " << server_address << std::endl;
     }
 }
 
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
         
         RunServer(e_addr, csv_file);
     } catch (const std::exception& e) {
-        std::cerr << "[E] ❌ Fatal error: " << e.what() << std::endl;
+        std::cerr << "[E]  Fatal error: " << e.what() << std::endl;
         return 1;
     }
     

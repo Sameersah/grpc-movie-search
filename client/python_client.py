@@ -7,10 +7,6 @@ import argparse
 import textwrap
 from typing import List
 
-# Import the generated python grpc code
-# Note: You need to generate these Python files using protoc
-# Example command:
-# python -m grpc_tools.protoc -I. --python_out=./generated/python --grpc_python_out=./generated/python movie.proto
 import movie_pb2
 import movie_pb2_grpc
 
@@ -59,7 +55,7 @@ class MovieClient:
             return response.results
             
         except grpc.RpcError as e:
-            print(f"❌ Error: {e.code()}")
+            print(f"Error: {e.code()}")
             print(f"   Details: {e.details()}")
             
             if e.code() == grpc.StatusCode.UNAVAILABLE:
@@ -86,15 +82,12 @@ def main():
     
     args = parser.parse_args()
     
-    # Create client
     client = MovieClient(args.server_address)
     
-    # If query was provided as command line arg, search for it
     if args.query:
         client.search_movie(args.query)
         return
     
-    # Interactive mode
     try:
         while True:
             query = input("\n🔍 Enter search term (title, genre, keywords) or 'exit' to quit: ")

@@ -62,10 +62,10 @@ public:
         Status status = stub_->Search(&context, ping, &pong);
         
         if (status.ok()) {
-            std::cout << "[C] ✅ Successfully connected to server E" << std::endl;
+            std::cout << "[C] Successfully connected to server E" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[C] ❌ Failed to connect to server E: " 
+            std::cerr << "[C]  Failed to connect to server E: " 
                      << status.error_message() 
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
@@ -126,7 +126,7 @@ public:
             movies_ = loadMoviesFromCSV(csv_file);
             std::cout << "[C] Successfully loaded movies from " << csv_file << std::endl;
         } catch (const std::exception& e) {
-            std::cerr << "[C] ❌ Error loading movies: " << e.what() << std::endl;
+            std::cerr << "[C]  Error loading movies: " << e.what() << std::endl;
         }
     }
 
@@ -202,7 +202,7 @@ void RunServer(const std::string& server_address, const std::string& e_address, 
         std::cout << "[C] Server listening on " << server_address << std::endl;
         server->Wait();
     } else {
-        std::cerr << "[C] ❌ Failed to start server on " << server_address << std::endl;
+        std::cerr << "[C]  Failed to start server on " << server_address << std::endl;
     }
 }
 
@@ -220,7 +220,7 @@ int main(int argc, char** argv) {
         
         RunServer(c_addr, e_addr, csv_file);
     } catch (const std::exception& e) {
-        std::cerr << "[C] ❌ Fatal error: " << e.what() << std::endl;
+        std::cerr << "[C]  Fatal error: " << e.what() << std::endl;
         return 1;
     }
     

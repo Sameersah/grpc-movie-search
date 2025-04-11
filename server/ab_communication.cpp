@@ -67,10 +67,10 @@ GrpcBCommunication::GrpcBCommunication(const std::string& b_address)
     grpc::Status status = stub_->Search(&context, ping, &pong);
 
     if (status.ok()) {
-        std::cout << "[A] ✅ Successfully connected to server B via gRPC" << std::endl;
+        std::cout << "[A] Successfully connected to server B via gRPC" << std::endl;
         connected_ = true;
     } else {
-        std::cerr << "[A] ❌ Failed to connect to server B: "
+        std::cerr << "[A]  Failed to connect to server B: "
                  << status.error_message() << std::endl;
         connected_ = false;
     }
@@ -123,7 +123,7 @@ SharedMemoryBCommunication::SharedMemoryBCommunication() {
 
         // Write ping to shared memory
         if (!requests_shm_->write(std::to_string(ping_id), req_data)) {
-            std::cerr << "[A] ❌ Failed to write ping request to shared memory" << std::endl;
+            std::cerr << "[A]  Failed to write ping request to shared memory" << std::endl;
             connected_ = false;
             return;
         }
@@ -131,14 +131,14 @@ SharedMemoryBCommunication::SharedMemoryBCommunication() {
         // Wait for response
         SharedResponse ping_resp{};
         if (WaitForResponse(ping_id, ping_resp)) {
-            std::cout << "[A] ✅ Successfully connected to server B via shared memory" << std::endl;
+            std::cout << "[A] Successfully connected to server B via shared memory" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[A] ❌ No response from server B via shared memory" << std::endl;
+            std::cerr << "[A]  No response from server B via shared memory" << std::endl;
             connected_ = false;
         }
     } catch (const std::exception& e) {
-        std::cerr << "[A] ❌ Failed to initialize shared memory: " << e.what() << std::endl;
+        std::cerr << "[A]  Failed to initialize shared memory: " << e.what() << std::endl;
         connected_ = false;
     }
 }
@@ -168,7 +168,7 @@ movie::SearchResponse SharedMemoryBCommunication::Search(const std::string& quer
 
         // Write request to shared memory
         if (!requests_shm_->write(std::to_string(req_id), req_data)) {
-            std::cerr << "[A] ❌ Failed to write request to shared memory" << std::endl;
+            std::cerr << "[A]  Failed to write request to shared memory" << std::endl;
             connected_ = false;
             return response;
         }
@@ -184,11 +184,11 @@ movie::SearchResponse SharedMemoryBCommunication::Search(const std::string& quer
             std::cout << "[A] Received " << response.results_size()
                       << " results from server B via shared memory" << std::endl;
         } else {
-            std::cerr << "[A] ❌ Timeout waiting for response from server B" << std::endl;
+            std::cerr << "[A]  Timeout waiting for response from server B" << std::endl;
             connected_ = false;
         }
     } catch (const std::exception& e) {
-        std::cerr << "[A] ❌ Error in shared memory communication: " << e.what() << std::endl;
+        std::cerr << "[A]  Error in shared memory communication: " << e.what() << std::endl;
         connected_ = false;
     }
 

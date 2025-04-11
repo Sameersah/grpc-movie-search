@@ -2,9 +2,9 @@
 [B] Will connect to server C at 127.0.0.1:50003
 [B] Will connect to server D at 127.0.0.1:50004
 [B] Testing connection to server C...
-[B] ✅ Successfully connected to server C
+[B] Successfully connected to server C
 [B] Testing connection to server D...
-[B] ✅ Successfully connected to server D
+[B] Successfully connected to server D
 Loaded 240920 movies from ./data/B_data.csv
 [B] Successfully loaded movies from ./data/B_data.csv
 [B] Failed to initialize shared memory listener: Failed to set shared memory size: Invalid argument

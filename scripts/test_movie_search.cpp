@@ -74,12 +74,12 @@ bool test_movie_matching() {
         bool passed = (result == test.expected_result);
         
         if (!passed) {
-            std::cerr << "❌ Test failed for query '" << test.query 
+            std::cerr << " Test failed for query '" << test.query 
                       << "': expected " << (test.expected_result ? "match" : "no match")
                       << " but got " << (result ? "match" : "no match") << std::endl;
             all_passed = false;
         } else {
-            std::cout << "✅ Test passed for query '" << test.query << "'" << std::endl;
+            std::cout << "Test passed for query '" << test.query << "'" << std::endl;
         }
     }
     
@@ -110,7 +110,7 @@ bool test_csv_parsing() {
     
     // Verify the results
     if (movies.size() != 2) {
-        std::cerr << "❌ Expected 2 movies, got " << movies.size() << std::endl;
+        std::cerr << " Expected 2 movies, got " << movies.size() << std::endl;
         return false;
     }
     
@@ -118,7 +118,7 @@ bool test_csv_parsing() {
     if (movies[0].title != "Inception" || 
         movies[0].vote_average != 8.364 ||
         movies[0].genres != "Action/Sci-Fi") {
-        std::cerr << "❌ First movie details don't match expected values" << std::endl;
+        std::cerr << " First movie details don't match expected values" << std::endl;
         return false;
     }
     
@@ -126,11 +126,11 @@ bool test_csv_parsing() {
     if (movies[1].title != "Interstellar" || 
         movies[1].vote_average != 8.417 ||
         movies[1].genres != "Sci-Fi/Adventure") {
-        std::cerr << "❌ Second movie details don't match expected values" << std::endl;
+        std::cerr << " Second movie details don't match expected values" << std::endl;
         return false;
     }
     
-    std::cout << "✅ CSV parsing test passed" << std::endl;
+    std::cout << "CSV parsing test passed" << std::endl;
     return true;
 }
 
@@ -148,10 +148,10 @@ int main() {
     std::cout << std::endl;
     
     if (tests_passed) {
-        std::cout << "🎉 All tests passed! 🎉" << std::endl;
+        std::cout << " All tests passed! " << std::endl;
         return 0;
     } else {
-        std::cerr << "❌ Some tests failed" << std::endl;
+        std::cerr << " Some tests failed" << std::endl;
         return 1;
     }
 }

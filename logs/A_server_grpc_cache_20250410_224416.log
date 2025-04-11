@@ -2,7 +2,7 @@
 [A] Will connect to server B at 127.0.0.1:50002
 [A] Cache TTL: 300 seconds, max size: 100 entries
 [A] Server B is on local machine, using shared memory communication
-[A] ❌ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
+[A]  Failed to initialize shared memory: Failed to set shared memory size: Invalid argument
 Loaded 240920 movies from ./data/A_data.csv
 [A] Successfully loaded movies from ./data/A_data.csv
 [A] ⚠️ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument

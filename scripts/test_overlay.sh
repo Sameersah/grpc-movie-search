@@ -1,7 +1,5 @@
 #!/bin/bash
-# Script to test the full overlay network for the movie search system
 
-# Bold and colors for better readability
 BOLD=$(tput bold)
 GREEN=$(tput setaf 2)
 RED=$(tput setaf 1)
@@ -20,13 +18,6 @@ B_PORT="50002"
 C_PORT="50003"
 D_PORT="50004"
 E_PORT="50005"
-
-# For multi-machine setup, update these with actual IP addresses
-# Uncomment and modify these lines to use different machines
-# B_IP="192.168.1.102"
-# C_IP="192.168.1.103"
-# D_IP="192.168.1.103"
-# E_IP="192.168.1.104"
 
 DATA_DIR="../data"
 BUILD_DIR="."

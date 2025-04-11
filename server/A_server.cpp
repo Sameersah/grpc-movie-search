@@ -69,10 +69,10 @@ public:
         Status status = stub_->Search(&context, ping, &pong);
         
         if (status.ok()) {
-            std::cout << "[A] ✅ Successfully connected to server B" << std::endl;
+            std::cout << "[A] Successfully connected to server B" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[A] ❌ Failed to connect to server B: " 
+            std::cerr << "[A]  Failed to connect to server B: " 
                      << status.error_message() 
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
@@ -148,7 +148,7 @@ public:
                 shm_available_ = false;
             }
         } catch (const std::exception& e) {
-            std::cerr << "[A] ❌ Error loading movies: " << e.what() << std::endl;
+            std::cerr << "[A]  Error loading movies: " << e.what() << std::endl;
         }
     }
 
@@ -329,7 +329,7 @@ void RunServer(const std::string& server_address, const std::string& b_address,
         
         server->Wait();
     } else {
-        std::cerr << "[A] ❌ Failed to start server on " << server_address << std::endl;
+        std::cerr << "[A]  Failed to start server on " << server_address << std::endl;
     }
 }
 
@@ -369,7 +369,7 @@ int main(int argc, char** argv) {
         
         RunServer(server_address, b_address, csv_file, cache_ttl, cache_size);
     } catch (const std::exception& e) {
-        std::cerr << "[A] ❌ Fatal error: " << e.what() << std::endl;
+        std::cerr << "[A]  Fatal error: " << e.what() << std::endl;
         return 1;
     }
     

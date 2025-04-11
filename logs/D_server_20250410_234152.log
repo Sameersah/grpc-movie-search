@@ -1,7 +1,7 @@
 [D] Starting server on 127.0.0.1:50004
 [D] Will connect to server E at 127.0.0.1:50005
 [D] Testing connection to server E...
-[D] ✅ Successfully connected to server E
+[D] Successfully connected to server E
 Loaded 240920 movies from ./data/D_data.csv
 [D] Successfully loaded movies from ./data/D_data.csv
 [D] Server listening on 127.0.0.1:50004

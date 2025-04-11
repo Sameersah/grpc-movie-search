@@ -83,10 +83,10 @@ public:
         Status status = stub_->Search(&context, ping, &pong);
 
         if (status.ok()) {
-            std::cout << "[B] ✅ Successfully connected to server C" << std::endl;
+            std::cout << "[B] Successfully connected to server C" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[B] ❌ Failed to connect to server C: "
+            std::cerr << "[B]  Failed to connect to server C: "
                      << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
@@ -153,10 +153,10 @@ public:
         Status status = stub_->Search(&context, ping, &pong);
 
         if (status.ok()) {
-            std::cout << "[B] ✅ Successfully connected to server D" << std::endl;
+            std::cout << "[B] Successfully connected to server D" << std::endl;
             connected_ = true;
         } else {
-            std::cerr << "[B] ❌ Failed to connect to server D: "
+            std::cerr << "[B]  Failed to connect to server D: "
                      << status.error_message()
                      << " (code: " << status.error_code() << ")" << std::endl;
             if (status.error_code() == StatusCode::UNAVAILABLE) {
@@ -218,7 +218,7 @@ public:
             movies_ = loadMoviesFromCSV(csv_file);
             std::cout << "[B] Successfully loaded movies from " << csv_file << std::endl;
         } catch (const std::exception& e) {
-            std::cerr << "[B] ❌ Error loading movies: " << e.what() << std::endl;
+            std::cerr << "[B]  Error loading movies: " << e.what() << std::endl;
         }
     }
 
@@ -477,7 +477,7 @@ void RunServer(const std::string& server_address, const std::string& c_address,
         std::cout << "[B] Server listening on " << server_address << std::endl;
         server->Wait();
     } else {
-        std::cerr << "[B] ❌ Failed to start server on " << server_address << std::endl;
+        std::cerr << "[B]  Failed to start server on " << server_address << std::endl;
     }
 
     // Stop shared memory listener when server exits
@@ -505,7 +505,7 @@ int main(int argc, char** argv) {
 
         RunServer(b_addr, c_addr, d_addr, csv_file);
     } catch (const std::exception& e) {
-        std::cerr << "[B] ❌ Fatal error: " << e.what() << std::endl;
+        std::cerr << "[B]  Fatal error: " << e.what() << std::endl;
         return 1;
     }
 

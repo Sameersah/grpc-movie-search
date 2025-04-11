@@ -3,7 +3,7 @@
 [A] Cache TTL: 300 seconds, max size: 100 entries
 [A] Server B is on remote machine, using gRPC communication
 [A] Testing gRPC connection to server B...
-[A] ✅ Successfully connected to server B via gRPC
+[A] Successfully connected to server B via gRPC
 Loaded 240920 movies from ./data/A_data.csv
 [A] Successfully loaded movies from ./data/A_data.csv
 [A] ⚠️ Failed to initialize shared memory: Failed to set shared memory size: Invalid argument

@@ -10,10 +10,6 @@
 #include <atomic>
 #include "movie.grpc.pb.h"
 
-/**
- * Thread-safe LRU cache for movie search results.
- * Uses TTL (time-to-live) for entries and LRU eviction when full.
- */
 class Cache {
 public:
     /**

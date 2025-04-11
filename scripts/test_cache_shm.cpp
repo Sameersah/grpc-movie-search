@@ -60,11 +60,11 @@ bool testCache() {
         bool found = cache.get("inception", result);
         
         if (!found) {
-            std::cerr << "❌ Failed to retrieve 'inception' from cache" << std::endl;
+            std::cerr << "Failed to retrieve 'inception' from cache" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Retrieved 'inception' from cache:" << std::endl;
+        std::cout << "Retrieved 'inception' from cache:" << std::endl;
         printResponse(result);
         
         // Test LRU eviction
@@ -84,11 +84,11 @@ bool testCache() {
         std::cout << "Cache size "<< cache.size() << std::endl;
         
         if (found) {
-            std::cerr << "❌ 'inception' should have been evicted but was found in cache" << std::endl;
+            std::cerr << "'inception' should have been evicted but was found in cache" << std::endl;
             return false;
         }
         
-        std::cout << "✅ LRU eviction working correctly ('matrix' was evicted)" << std::endl;
+        std::cout << "LRU eviction working correctly ('matrix' was evicted)" << std::endl;
         
         // Test TTL expiration
         std::cout << "\nTesting TTL expiration (waiting 3 seconds)..." << std::endl;
@@ -103,11 +103,11 @@ bool testCache() {
         found = cache.get("star wars", result);
         
         if (found) {
-            std::cerr << "❌ 'star wars' should have expired but was found in cache" << std::endl;
+            std::cerr << "'star wars' should have expired but was found in cache" << std::endl;
             return false;
         }
         
-        std::cout << "✅ TTL expiration working correctly ('star wars' was expired)" << std::endl;
+        std::cout << "TTL expiration working correctly ('star wars' was expired)" << std::endl;
         
         // Test cache statistics
         std::cout << "\nCache statistics:" << std::endl;
@@ -119,7 +119,7 @@ bool testCache() {
         
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "❌ Cache test failed with exception: " << e.what() << std::endl;
+        std::cerr << "Cache test failed with exception: " << e.what() << std::endl;
         return false;
     }
 }
@@ -143,54 +143,54 @@ bool testSharedMemory() {
         bool stored = shm.write("shared_test", serialized);
         
         if (!stored) {
-            std::cerr << "❌ Failed to store data in shared memory" << std::endl;
+            std::cerr << "Failed to store data in shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Stored data in shared memory (" << serialized.size() << " bytes)" << std::endl;
+        std::cout << "Stored data in shared memory (" << serialized.size() << " bytes)" << std::endl;
         
         // Read back from shared memory
         std::vector<uint8_t> retrieved;
         bool found = shm.read("shared_test", retrieved);
         
         if (!found) {
-            std::cerr << "❌ Failed to retrieve data from shared memory" << std::endl;
+            std::cerr << "Failed to retrieve data from shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Retrieved data from shared memory (" << retrieved.size() << " bytes)" << std::endl;
+        std::cout << "Retrieved data from shared memory (" << retrieved.size() << " bytes)" << std::endl;
         
         // Deserialize and check
         SearchResponse result;
         bool deserialized = ResponseSerializer::deserialize(retrieved, result);
         
         if (!deserialized) {
-            std::cerr << "❌ Failed to deserialize data from shared memory" << std::endl;
+            std::cerr << "  Failed to deserialize data from shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Deserialized response from shared memory:" << std::endl;
+        std::cout << "Deserialized response from shared memory:" << std::endl;
         printResponse(result);
         
         // Test entry removal
         bool removed = shm.remove("shared_test");
         
         if (!removed) {
-            std::cerr << "❌ Failed to remove entry from shared memory" << std::endl;
+            std::cerr << "  Failed to remove entry from shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Successfully removed entry from shared memory" << std::endl;
+        std::cout << "Successfully removed entry from shared memory" << std::endl;
         
         // Verify entry was removed
         found = shm.read("shared_test", retrieved);
         
         if (found) {
-            std::cerr << "❌ Entry should have been removed but was found in shared memory" << std::endl;
+            std::cerr << "  Entry should have been removed but was found in shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Entry verification successful (entry was removed)" << std::endl;
+        std::cout << "Entry verification successful (entry was removed)" << std::endl;
         
         // Test shared memory statistics
         std::cout << "\nShared memory statistics:" << std::endl;
@@ -199,11 +199,11 @@ bool testSharedMemory() {
         
         // Clean up
         PosixSharedMemory::destroy("/test_movie_cache");
-        std::cout << "✅ Destroyed shared memory" << std::endl;
+        std::cout << "Destroyed shared memory" << std::endl;
         
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "❌ Shared memory test failed with exception: " << e.what() << std::endl;
+        std::cerr << "  Shared memory test failed with exception: " << e.what() << std::endl;
         return false;
     }
 }
@@ -227,11 +227,11 @@ bool testMultiProcess() {
         bool stored1 = shm1.write("test_key", serialized1);
         
         if (!stored1) {
-            std::cerr << "❌ Process 1: Failed to store data in shared memory" << std::endl;
+            std::cerr << "  Process 1: Failed to store data in shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Process 1: Stored data in shared memory" << std::endl;
+        std::cout << "Process 1: Stored data in shared memory" << std::endl;
         
         // Create second "process" shared memory (opens existing)
         PosixSharedMemory shm2("/test_mp_cache", 1024 * 1024, false);
@@ -241,7 +241,7 @@ bool testMultiProcess() {
         bool found = shm2.read("test_key", retrieved);
         
         if (!found) {
-            std::cerr << "❌ Process 2: Failed to retrieve data from shared memory" << std::endl;
+            std::cerr << "  Process 2: Failed to retrieve data from shared memory" << std::endl;
             return false;
         }
         
@@ -250,11 +250,11 @@ bool testMultiProcess() {
         bool deserialized = ResponseSerializer::deserialize(retrieved, result);
         
         if (!deserialized) {
-            std::cerr << "❌ Process 2: Failed to deserialize data from shared memory" << std::endl;
+            std::cerr << "  Process 2: Failed to deserialize data from shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Process 2: Successfully read data written by Process 1:" << std::endl;
+        std::cout << "Process 2: Successfully read data written by Process 1:" << std::endl;
         printResponse(result);
         
         // Modify data from second "process"
@@ -263,18 +263,18 @@ bool testMultiProcess() {
         bool stored2 = shm2.write("test_key2", serialized2);
         
         if (!stored2) {
-            std::cerr << "❌ Process 2: Failed to store new data in shared memory" << std::endl;
+            std::cerr << "  Process 2: Failed to store new data in shared memory" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Process 2: Stored new data in shared memory" << std::endl;
+        std::cout << "Process 2: Stored new data in shared memory" << std::endl;
         
         // Read modified data from first "process"
         std::vector<uint8_t> retrieved2;
         bool found2 = shm1.read("test_key2", retrieved2);
         
         if (!found2) {
-            std::cerr << "❌ Process 1: Failed to retrieve data written by Process 2" << std::endl;
+            std::cerr << "  Process 1: Failed to retrieve data written by Process 2" << std::endl;
             return false;
         }
         
@@ -283,20 +283,20 @@ bool testMultiProcess() {
         bool deserialized2 = ResponseSerializer::deserialize(retrieved2, result2);
         
         if (!deserialized2) {
-            std::cerr << "❌ Process 1: Failed to deserialize data from Process 2" << std::endl;
+            std::cerr << "  Process 1: Failed to deserialize data from Process 2" << std::endl;
             return false;
         }
         
-        std::cout << "✅ Process 1: Successfully read data written by Process 2:" << std::endl;
+        std::cout << "Process 1: Successfully read data written by Process 2:" << std::endl;
         printResponse(result2);
         
         // Clean up
         PosixSharedMemory::destroy("/test_mp_cache");
-        std::cout << "✅ Destroyed shared memory" << std::endl;
+        std::cout << "Destroyed shared memory" << std::endl;
         
         return true;
     } catch (const std::exception& e) {
-        std::cerr << "❌ Multi-process test failed with exception: " << e.what() << std::endl;
+        std::cerr << "  Multi-process test failed with exception: " << e.what() << std::endl;
         return false;
     }
 }
@@ -310,15 +310,15 @@ int main() {
     bool mpSuccess = testMultiProcess();
     
     std::cout << "\n===== Test Results =====\n" << std::endl;
-    std::cout << "In-Memory Cache Test: " << (cacheSuccess ? "✅ Passed" : "❌ Failed") << std::endl;
-    std::cout << "Shared Memory Test: " << (shmSuccess ? "✅ Passed" : "❌ Failed") << std::endl;
-    std::cout << "Multi-Process Test: " << (mpSuccess ? "✅ Passed" : "❌ Failed") << std::endl;
+    std::cout << "In-Memory Cache Test: " << (cacheSuccess ? "Passed" : "  Failed") << std::endl;
+    std::cout << "Shared Memory Test: " << (shmSuccess ? "Passed" : "  Failed") << std::endl;
+    std::cout << "Multi-Process Test: " << (mpSuccess ? "Passed" : "  Failed") << std::endl;
     
     if (cacheSuccess && shmSuccess && mpSuccess) {
-        std::cout << "\n🎉 All tests passed successfully! 🎉" << std::endl;
+        std::cout << "\n  All tests passed successfully!  " << std::endl;
         return 0;
     } else {
-        std::cerr << "\n❌ Some tests failed" << std::endl;
+        std::cerr << "\n  Some tests failed" << std::endl;
         return 1;
     }
 }
